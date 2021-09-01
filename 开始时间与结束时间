@@ -1,0 +1,41 @@
+利用antd组件库中的DatePicker实现一个开始时间与结束时间，具体实现要求如下：
+1. 两者都不可选当天日期之后的时间
+2. 当选择开始时间之后，结束时间不能选择开始时间之前的日期
+3. 当选择结束时间之后，开始时间不能选择结束时间之后的日期
+
+  const dateFormat = 'YYYY/MM/DD';
+  const [searchStartDate, setSearchStartDate] = useState('');
+  const [searchEndDate, setSearchEndDate] = useState('');
+  const dateChangeStart = current => {
+    setSearchStartDate(current);
+  };
+  const dateChangeEnd = current => {
+    setSearchEndDate(current);
+  };
+  const disabledStart = current => {
+    if (searchEndDate) {
+      return current && ((current > searchEndDate) || (current > moment().endOf('day')));
+    }
+    return current && (current > moment().endOf('day'));
+  };
+  const disabledEnd = current => {
+    if (searchStartDate) {
+      return current && ((current < searchStartDate) || (current > moment().endOf('day')));
+    }
+    return current && (current > moment().endOf('day'));
+  };
+  
+  <Form.Item label='开始时间'>
+    {getFieldDecorator('dateFrom', {
+      rules: [{ required: true, message: getFormErrorI18n('请选择开始时间') }],
+    })(
+      <DatePicker disabledDate={disabledStart} onChange={dateChangeStart} format={dateFormat} placeholder='请选择开始时间' />
+    )}
+  </Form.Item>
+  <Form.Item label='结束时间'>
+    {getFieldDecorator('dateTo', {
+      rules: [{ required: true, message: getFormErrorI18n('请选择结束时间') }],
+    })(
+      <DatePicker disabledDate={disabledEnd} onChange={dateChangeEnd} format={dateFormat} placeholder='请选择开始时间' />
+    )}
+  </Form.Item>
